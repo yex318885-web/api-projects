@@ -1,0 +1,43 @@
+# OS / 编辑器
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# 依赖
+**/node_modules/
+**/.venv/
+**/venv/
+**/__pycache__/
+**/*.pyc
+
+# 密钥与证书（禁止上传）
+**/.env
+**/.env.*
+!**/.env.example
+**/certs/
+*.pem
+*.key
+
+# 本地数据与数据库
+**/data/
+**/*.sqlite3
+**/*.sqlite3-wal
+**/*.sqlite3-shm
+
+# 构建产物
+**/dist/
+**/build/
+**/*.tsbuildinfo
+**/webassets/dist/
+
+# 日志
+**/*.log
+logs/
+
+# 工具轨迹与临时文件（非项目源码）
+.openclaw/
+.screenshots/
+_fttmp/

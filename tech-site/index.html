@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>极客栈 · 技术站</title>
+<style>
+  :root{
+    --bg:#080b12; --bg2:#0f1521; --card:#111827; --card2:#182132;
+    --line:#1f2b3d; --text:#e6edf7; --muted:#8b9cb3;
+    --cyan:#22d3ee; --violet:#a78bfa; --green:#34d399; --amber:#fbbf24;
+    --mono:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",Menlo,monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    background:
+      radial-gradient(900px 500px at 80% -10%, rgba(34,211,238,.12), transparent 60%),
+      radial-gradient(700px 420px at 10% 0%, rgba(167,139,250,.10), transparent 55%),
+      var(--bg);
+    color:var(--text);line-height:1.65;
+  }
+  a{color:var(--cyan);text-decoration:none}
+  code,pre,.mono{font-family:var(--mono)}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+
+  /* nav */
+  nav{position:sticky;top:0;z-index:50;background:rgba(8,11,18,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:62px}
+  .logo{font-weight:800;font-size:19px;letter-spacing:.3px;font-family:var(--mono)}
+  .logo i{color:var(--cyan);font-style:normal}
+  .nav-links{display:flex;gap:26px}
+  .nav-links a{color:var(--muted);font-size:14.5px;font-weight:500;transition:.18s}
+  .nav-links a:hover{color:var(--text)}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:6px;
+    padding:9px 18px;border-radius:9px;font-weight:600;font-size:14px;
+    border:1px solid var(--line);background:transparent;color:var(--text);cursor:pointer;transition:.18s;
+  }
+  .btn:hover{border-color:var(--cyan);color:var(--cyan)}
+  .btn-fill{background:var(--cyan);border-color:var(--cyan);color:#03141a}
+  .btn-fill:hover{background:#67e8f9;color:#03141a}
+
+  /* hero */
+  .hero{padding:76px 0 60px}
+  .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:44px;align-items:center}
+  .chip{
+    display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-family:var(--mono);
+    color:var(--cyan);border:1px solid rgba(34,211,238,.35);background:rgba(34,211,238,.07);
+    padding:5px 12px;border-radius:999px;margin-bottom:20px;
+  }
+  .dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
+  h1{font-size:clamp(30px,4.2vw,46px);line-height:1.2;font-weight:800;letter-spacing:-.5px}
+  h1 .grad{background:linear-gradient(100deg,var(--cyan),var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p.lead{color:var(--muted);font-size:17px;margin:18px 0 28px;max-width:520px}
+  .hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+
+  /* terminal */
+  .term{background:#0a0f18;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 24px 60px -30px rgba(34,211,238,.35)}
+  .term-bar{display:flex;align-items:center;gap:7px;padding:11px 14px;background:#0d1420;border-bottom:1px solid var(--line)}
+  .term-bar span{width:11px;height:11px;border-radius:50%}
+  .term-bar .r{background:#ff5f57}.term-bar .y{background:#febc2e}.term-bar .g{background:#28c840}
+  .term-bar .title{margin-left:8px;color:#5b6c82;font-size:12px;font-family:var(--mono)}
+  .term-body{padding:18px;font-size:13.2px;line-height:1.9;font-family:var(--mono);min-height:246px}
+  .term-body .p{color:var(--green)}
+  .term-body .c{color:var(--text)}
+  .term-body .cm{color:#5b6c82}
+  .term-body .o{color:var(--cyan)}
+  .term-body .w{color:var(--amber)}
+  .cursor{display:inline-block;width:8px;height:15px;background:var(--cyan);vertical-align:-2px;animation:blink 1.05s steps(1) infinite}
+  @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+
+  section{padding:62px 0}
+  .sec-head{margin-bottom:38px}
+  .sec-head .tag{font-family:var(--mono);font-size:12.5px;color:var(--violet);letter-spacing:1.5px;text-transform:uppercase}
+  .sec-head h2{font-size:clamp(24px,3vw,32px);font-weight:800;margin-top:8px}
+  .sec-head p{color:var(--muted);margin-top:8px;max-width:620px}
+
+  /* articles */
+  .posts{display:grid;gap:14px}
+  .post{
+    background:var(--card);border:1px solid var(--line);border-radius:13px;
+    padding:20px 22px;cursor:pointer;transition:.2s;
+  }
+  .post:hover{border-color:rgba(34,211,238,.5);transform:translateY(-1px)}
+  .post-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+  .post h3{font-size:16.5px;font-weight:700}
+  .post .meta{display:flex;gap:14px;margin-top:7px;font-size:12.5px;color:var(--muted);font-family:var(--mono)}
+  .post .body{display:none;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line);color:var(--muted);font-size:14.2px}
+  .post.open .body{display:block}
+  .arrow{color:var(--cyan);font-size:12px;transition:.25s;margin-top:4px}
+  .post.open .arrow{transform:rotate(180deg)}
+  .kbd{font-family:var(--mono);font-size:12px;background:var(--card2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;color:var(--cyan)}
+
+  /* devtools */
+  #tools{background:linear-gradient(180deg,rgba(17,24,39,.55),transparent)}
+  .tool-shell{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  .tool-tabs{display:flex;border-bottom:1px solid var(--line);background:#0d1420;overflow-x:auto}
+  .tool-tab{
+    padding:13px 20px;font-size:14px;font-weight:600;color:var(--muted);
+    background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;transition:.18s;
+  }
+  .tool-tab:hover{color:var(--text)}
+  .tool-tab.active{color:var(--cyan);border-bottom-color:var(--cyan);background:rgba(34,211,238,.05)}
+  .tool-pane{display:none;padding:22px}
+  .tool-pane.active{display:block}
+  .tool-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .tool-row label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:6px;font-family:var(--mono)}
+  textarea,input[type=text],input[type=number]{
+    width:100%;background:#0a0f18;border:1px solid var(--line);border-radius:9px;
+    color:var(--text);padding:11px 12px;font-size:13.5px;font-family:var(--mono);
+    outline:none;resize:vertical;transition:.18s;
+  }
+  textarea:focus,input:focus{border-color:var(--cyan)}
+  textarea{min-height:150px;line-height:1.7}
+  .tool-actions{display:flex;gap:9px;margin-top:12px;flex-wrap:wrap}
+  .hint{font-size:12.5px;color:var(--muted);margin-top:10px}
+  .hint.err{color:#f87171}
+
+  /* stack */
+  .stack-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
+  .stack{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:20px;transition:.2s}
+  .stack:hover{border-color:rgba(167,139,250,.5)}
+  .stack .ico{font-family:var(--mono);font-size:13px;color:var(--violet);margin-bottom:10px}
+  .stack h4{font-size:15.5px;margin-bottom:6px}
+  .stack p{font-size:13px;color:var(--muted)}
+  .bar{height:4px;border-radius:99px;background:var(--card2);margin-top:12px;overflow:hidden}
+  .bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--cyan),var(--violet))}
+
+  footer{border-top:1px solid var(--line);padding:34px 0;text-align:center;color:var(--muted);font-size:13.5px}
+  footer .mono{font-size:12.5px;color:#5b6c82}
+
+  @media(max-width:860px){
+    .hero-grid{grid-template-columns:1fr;gap:32px}
+    .nav-links{display:none}
+    .tool-row{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-inner">
+    <div class="logo"><i>{</i> 极客栈 <i>}</i></div>
+    <div class="nav-links">
+      <a href="#posts">技术笔记</a>
+      <a href="#tools">开发者工具</a>
+      <a href="#stack">技术栈</a>
+    </div>
+    <a href="#tools" class="btn btn-fill">打开工具</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="chip"><span class="dot"></span> 持续更新 · 纯前端实现</div>
+      <h1>把踩过的坑，<br><span class="grad">写成可复用的经验</span></h1>
+      <p class="lead">面向开发者的技术沉淀站点：实战笔记、架构思考，以及随手可用的开发小工具，全部本地运行。</p>
+      <div class="hero-actions">
+        <a href="#posts" class="btn btn-fill">开始阅读</a>
+        <a href="#tools" class="btn">试试工具</a>
+      </div>
+    </div>
+
+    <div class="term">
+      <div class="term-bar">
+        <span class="r"></span><span class="y"></span><span class="g"></span>
+        <span class="title">zsh — tech-station</span>
+      </div>
+      <div class="term-body" id="term-body"></div>
+    </div>
+  </div>
+</header>
+
+<section id="posts">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="tag">// notes</div>
+      <h2>技术笔记</h2>
+      <p>点击任意标题展开摘要，记录真实项目中的取舍与结论。</p>
+    </div>
+    <div class="posts" id="post-list"></div>
+  </div>
+</section>
+
+<section id="tools">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="tag">// devtools</div>
+      <h2>开发者小工具</h2>
+      <p>JSON 格式化、Base64 编解码、时间戳转换，数据不出浏览器。</p>
+    </div>
+
+    <div class="tool-shell">
+      <div class="tool-tabs" id="tool-tabs">
+        <button class="tool-tab active" data-pane="json">JSON 格式化</button>
+        <button class="tool-tab" data-pane="b64">Base64 编解码</button>
+        <button class="tool-tab" data-pane="ts">时间戳转换</button>
+      </div>
+
+      <div class="tool-pane active" id="pane-json">
+        <div class="tool-row">
+          <div>
+            <label>// 输入 JSON</label>
+            <textarea id="json-in" placeholder='{"name":"tech","tags":["dev","tools"]}'></textarea>
+          </div>
+          <div>
+            <label>// 输出</label>
+            <textarea id="json-out" readonly placeholder="结果在这里"></textarea>
+          </div>
+        </div>
+        <div class="tool-actions">
+          <button class="btn btn-fill" id="json-fmt">格式化 (2 空格)</button>
+          <button class="btn" id="json-min">压缩一行</button>
+          <button class="btn" id="json-clear">清空</button>
+        </div>
+        <div class="hint" id="json-hint">支持嵌套对象与数组，解析失败会提示行号。</div>
+      </div>
+
+      <div class="tool-pane" id="pane-b64">
+        <div class="tool-row">
+          <div>
+            <label>// 原文 / Base64</label>
+            <textarea id="b64-in" placeholder="输入要被编码的文本，或粘贴 Base64 解码"></textarea>
+          </div>
+          <div>
+            <label>// 结果</label>
+            <textarea id="b64-out" readonly placeholder="结果在这里"></textarea>
+          </div>
+        </div>
+        <div class="tool-actions">
+          <button class="btn btn-fill" id="b64-enc">编码 → Base64</button>
+          <button class="btn" id="b64-dec">解码 ← Base64</button>
+          <button class="btn" id="b64-clear">清空</button>
+        </div>
+        <div class="hint" id="b64-hint">使用 UTF-8 安全编码，支持中文。</div>
+      </div>
+
+      <div class="tool-pane" id="pane-ts">
+        <div class="tool-row">
+          <div>
+            <label>// 时间戳（秒或毫秒）</label>
+            <input type="text" id="ts-in" placeholder="例如 1795436000 或 1795436000000">
+          </div>
+          <div>
+            <label>// 日期时间字符串</label>
+            <input type="text" id="ts-date" placeholder="例如 2026-11-23 20:15:00">
+          </div>
+        </div>
+        <div class="tool-actions">
+          <button class="btn btn-fill" id="ts-to-date">时间戳 → 日期</button>
+          <button class="btn" id="ts-to-ts">日期 → 时间戳</button>
+          <button class="btn" id="ts-now">当前时间</button>
+        </div>
+        <div class="hint" id="ts-hint">自动识别秒/毫秒，按本地时区显示。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="stack">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="tag">// stack</div>
+      <h2>技术方向</h2>
+      <p>本站内容覆盖的几个主要方向，持续补充实战细节。</p>
+    </div>
+    <div class="stack-grid">
+      <div class="stack"><div class="ico">$ node</div><h4>Node.js 服务端</h4><p>接口设计、流式响应、进程与部署实践。</p><div class="bar"><i style="width:88%"></i></div></div>
+      <div class="stack"><div class="ico">$ git</div><h4>工程化与协作</h4><p>构建流水线、代码审查、版本策略。</p><div class="bar"><i style="width:76%"></i></div></div>
+      <div class="stack"><div class="ico">$ curl</div><h4>网络与协议</h4><p>HTTP 语义、缓存、跨域与鉴权取舍。</p><div class="bar"><i style="width:82%"></i></div></div>
+      <div class="stack"><div class="ico">$ npm</div><h4>前端性能</h4><p>渲染路径、资源加载与体验优化。</p><div class="bar"><i style="width:70%"></i></div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p class="mono">// 极客栈 · 技术站 — 所有工具在本地运行，不上传任何数据</p>
+  </div>
+</footer>
+
+<script>
+// ---------- 终端打字动画 ----------
+const lines = [
+  ['p','$ ', 'cat stack.md'],
+  ['o','', 'Node.js 20 · 原生 HTTP · 零依赖前端'],
+  ['p','$ ', 'ls ./notes'],
+  ['c','', 'http-cache.md  build-pipeline.md  event-loop.md'],
+  ['p','$ ', 'echo "keep shipping"'],
+  ['w','', 'keep shipping'],
+];
+const termEl = document.getElementById('term-body');
+let li = 0, ci = 0;
+const buffer = [];
+function typeStep(){
+  if(li >= lines.length){
+    buffer.push('<span class="p">$ </span><span class="cursor"></span>');
+    termEl.innerHTML = buffer.join('<br>');
+    return;
+  }
+  const [cls,prompt,text] = lines[li];
+  if(ci === 0) buffer.push('<span class="'+(cls==='p'?'p':cls==='w'?'w':'c')+'">'+(prompt||'')+'<span class="'+(cls==='o'?'o':'c')+'" data-t></span></span>');
+  const target = buffer[buffer.length-1];
+  const span = document.createElement('div');
+  span.innerHTML = target;
+  const holder = span.querySelector('[data-t]');
+  if(holder) holder.textContent = text.slice(0, ci+1);
+  buffer[buffer.length-1] = span.innerHTML;
+  termEl.innerHTML = buffer.join('<br>') + '<span class="cursor"></span>';
+  ci++;
+  if(ci >= text.length || !text){ li++; ci = 0; setTimeout(typeStep, 380); }
+  else setTimeout(typeStep, 32);
+}
+typeStep();
+
+// ---------- 文章 ----------
+const posts = [
+  {
+    t:'HTTP 缓存策略：从 no-store 到 stale-while-revalidate',
+    tags:['http','cache'], read:'6 min',
+    body:'静态资源用 content-hash 文件名 + 长缓存，HTML 入口用 no-cache 保证可更新。配合 ETag 与 Last-Modified 减少重复传输；对时效性要求高的接口可考虑 stale-while-revalidate 平衡一致性与速度。'
+  },
+  {
+    t:'Node.js 事件循环中的三个高频误区',
+    tags:['nodejs','async'], read:'8 min',
+    body:'误区一：process.nextTick 一定比 setImmediate 快——两者所在阶段不同，语义不同。误区二：await 会阻塞事件循环——只会让出当前微任务，CPU 密集计算仍需 worker_threads。误区三：Promise 回调是宏任务——它是微任务，会插队到当前宏任务之后。'
+  },
+  {
+    t:'零依赖静态站点：为什么我把构建链砍到只剩三个文件',
+    tags:['build','simplicity'], read:'5 min',
+    body:'当页面规模有限时，手写 HTML/CSS/JS 比引入框架更可控：首屏更快、调试链路更短、升级风险为零。代价是复用性下降，所以需要明确边界——超过 50 个组件再引入工程化。'
+  },
+  {
+    t:'前端本地计算的隐私优势',
+    tags:['privacy','frontend'], read:'4 min',
+    body:'把计算逻辑放在浏览器，意味着输入数据无需离开设备，天然规避日志留存与传输泄露风险。适合计算器、格式化、编解码类工具；但需要明确告知用户数据的处理方式。'
+  },
+  {
+    t:'部署后日志该看什么：三个关键指标',
+    tags:['ops','deploy'], read:'7 min',
+    body:'启动日志确认监听地址与端口一致；运行日志关注首个错误堆栈而非尾部噪音；访问日志看 5xx 比例与异常 IP 集中度。日志只保留有诊断价值的部分，避免把敏感信息写进文件。'
+  },
+];
+const postList = document.getElementById('post-list');
+posts.forEach(p=>{
+  const el = document.createElement('div');
+  el.className = 'post';
+  el.innerHTML =
+    '<div class="post-head">'+
+      '<div><h3>'+p.t+'</h3><div class="meta">'+
+        p.tags.map(t=>'<span class="kbd">#'+t+'</span>').join(' ')+
+        '<span>'+p.read+'</span>'+
+      '</div></div>'+
+      '<span class="arrow">▾</span>'+
+    '</div>'+
+    '<div class="body">'+p.body+'</div>';
+  el.addEventListener('click', ()=>el.classList.toggle('open'));
+  postList.appendChild(el);
+});
+
+// ---------- 工具切换 ----------
+document.getElementById('tool-tabs').addEventListener('click', e=>{
+  const tab = e.target.closest('.tool-tab');
+  if(!tab) return;
+  document.querySelectorAll('.tool-tab').forEach(t=>t.classList.toggle('active', t===tab));
+  document.querySelectorAll('.tool-pane').forEach(p=>p.classList.toggle('active', p.id === 'pane-'+tab.dataset.pane));
+});
+
+// ---------- JSON ----------
+const jsonIn = document.getElementById('json-in');
+const jsonOut = document.getElementById('json-out');
+const jsonHint = document.getElementById('json-hint');
+jsonIn.value = '{"site":"tech","version":1,"tags":["node","http"],"features":{"tools":true}}';
+function jsonRun(mode){
+  jsonHint.classList.remove('err');
+  try{
+    const obj = JSON.parse(jsonIn.value);
+    jsonOut.value = mode==='min' ? JSON.stringify(obj) : JSON.stringify(obj, null, 2);
+    const size = new Blob([jsonOut.value]).size;
+    jsonHint.textContent = '解析成功 · 输出 '+size+' 字节';
+  }catch(err){
+    jsonOut.value = '';
+    jsonHint.classList.add('err');
+    jsonHint.textContent = '解析失败：' + err.message;
+  }
+}
+document.getElementById('json-fmt').onclick = ()=>jsonRun('fmt');
+document.getElementById('json-min').onclick = ()=>jsonRun('min');
+document.getElementById('json-clear').onclick = ()=>{ jsonIn.value=''; jsonOut.value=''; jsonHint.classList.remove('err'); jsonHint.textContent='已清空'; };
+
+// ---------- Base64 ----------
+const b64In = document.getElementById('b64-in');
+const b64Out = document.getElementById('b64-out');
+const b64Hint = document.getElementById('b64-hint');
+function enc(s){
+  const bytes = new TextEncoder().encode(s);
+  let bin = '';
+  bytes.forEach(b=>bin += String.fromCharCode(b));
+  return btoa(bin);
+}
+function dec(s){
+  const bin = atob(s.trim());
+  const bytes = Uint8Array.from(bin, c=>c.charCodeAt(0));
+  return new TextDecoder().decode(bytes);
+}
+document.getElementById('b64-enc').onclick = ()=>{
+  b64Hint.classList.remove('err');
+  b64Out.value = enc(b64In.value);
+  b64Hint.textContent = '已编码 · '+b64Out.value.length+' 字符';
+};
+document.getElementById('b64-dec').onclick = ()=>{
+  b64Hint.classList.remove('err');
+  try{
+    b64Out.value = dec(b64In.value);
+    b64Hint.textContent = '解码成功 · '+b64Out.value.length+' 字符';
+  }catch(err){
+    b64Out.value = '';
+    b64Hint.classList.add('err');
+    b64Hint.textContent = '解码失败：输入不是有效的 Base64';
+  }
+};
+document.getElementById('b64-clear').onclick = ()=>{ b64In.value=''; b64Out.value=''; b64Hint.classList.remove('err'); b64Hint.textContent='已清空'; };
+
+// ---------- 时间戳 ----------
+const tsIn = document.getElementById('ts-in');
+const tsDate = document.getElementById('ts-date');
+const tsHint = document.getElementById('ts-hint');
+function pad(n){ return String(n).padStart(2,'0'); }
+function fmtDate(d){
+  return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+' '+pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());
+}
+document.getElementById('ts-to-date').onclick = ()=>{
+  tsHint.classList.remove('err');
+  const n = Number(String(tsIn.value).trim());
+  if(!isFinite(n) || n <= 0){ tsHint.classList.add('err'); tsHint.textContent='请输入有效的时间戳数字'; return; }
+  const ms = String(Math.trunc(n)).length <= 10 ? n*1000 : n;
+  const d = new Date(ms);
+  if(isNaN(d.getTime())){ tsHint.classList.add('err'); tsHint.textContent='时间戳超出有效范围'; return; }
+  tsDate.value = fmtDate(d);
+  tsHint.textContent = '按' + (String(Math.trunc(n)).length<=10 ? '秒' : '毫秒') + '解析 · 本地时区';
+};
+document.getElementById('ts-to-ts').onclick = ()=>{
+  tsHint.classList.remove('err');
+  const raw = tsDate.value.trim();
+  if(!raw){ tsHint.classList.add('err'); tsHint.textContent='请输入日期时间，如 2026-11-23 20:15:00'; return; }
+  const d = new Date(raw.replace(' ', 'T'));
+  if(isNaN(d.getTime())){ tsHint.classList.add('err'); tsHint.textContent='日期格式无法识别'; return; }
+  tsIn.value = Math.floor(d.getTime()/1000);
+  tsHint.textContent = '毫秒：' + d.getTime() + ' · 秒：' + Math.floor(d.getTime()/1000);
+};
+document.getElementById('ts-now').onclick = ()=>{
+  const now = new Date();
+  tsIn.value = Math.floor(now.getTime()/1000);
+  tsDate.value = fmtDate(now);
+  tsHint.classList.remove('err');
+  tsHint.textContent = '当前时间已填入';
+};
+</script>
+</body>
+</html>

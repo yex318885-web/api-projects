@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>财算坊 · 财务工具箱</title>
+<style>
+  :root{
+    --bg:#0f172a; --bg2:#1e293b; --card:#1e293b; --card2:#273449;
+    --text:#e2e8f0; --muted:#94a3b8; --line:#334155;
+    --accent:#10b981; --accent2:#0ea5e9; --gold:#f59e0b;
+    --danger:#ef4444;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    background:linear-gradient(160deg,#0f172a 0%,#111827 100%);
+    color:var(--text);line-height:1.6;
+  }
+  a{color:var(--accent2);text-decoration:none}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+
+  /* nav */
+  nav{
+    position:sticky;top:0;z-index:50;
+    background:rgba(15,23,42,.85);backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:62px}
+  .logo{font-weight:800;font-size:20px;letter-spacing:.5px}
+  .logo span{color:var(--accent)}
+  .nav-links{display:flex;gap:26px;align-items:center}
+  .nav-links a{color:var(--muted);font-size:15px;font-weight:500;transition:.2s}
+  .nav-links a:hover{color:var(--text)}
+  .nav-links a.active{color:var(--accent)}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;
+    padding:10px 20px;border-radius:10px;font-weight:600;font-size:14px;
+    border:none;cursor:pointer;transition:.2s;color:#04120b;
+  }
+  .btn-primary{background:var(--accent)}
+  .btn-primary:hover{background:#34d399}
+  .btn-ghost{background:transparent;border:1px solid var(--line);color:var(--text)}
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+
+  /* hero */
+  header.hero{
+    padding:84px 0 72px;position:relative;overflow:hidden;
+  }
+  .hero::before{
+    content:"";position:absolute;inset:-40%;
+    background:radial-gradient(circle at 30% 20%,rgba(16,185,129,.18),transparent 45%),
+               radial-gradient(circle at 75% 65%,rgba(14,165,233,.16),transparent 45%);
+    filter:blur(20px);z-index:0;
+  }
+  .hero .wrap{position:relative;z-index:1}
+  .badge{
+    display:inline-flex;align-items:center;gap:8px;padding:6px 14px;
+    border:1px solid var(--line);border-radius:999px;font-size:13px;color:var(--muted);
+    background:rgba(30,41,59,.6);margin-bottom:22px;
+  }
+  .badge b{color:var(--accent)}
+  h1{font-size:clamp(30px,5vw,52px);line-height:1.15;font-weight:800;letter-spacing:-.5px}
+  h1 .grad{background:linear-gradient(90deg,#10b981,#0ea5e9);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p.lead{color:var(--muted);font-size:18px;margin:20px 0 30px;max-width:640px}
+  .hero-actions{display:flex;gap:14px;flex-wrap:wrap}
+  .stats{display:flex;gap:40px;margin-top:56px;flex-wrap:wrap}
+  .stat .num{font-size:30px;font-weight:800;color:var(--accent)}
+  .stat .lbl{color:var(--muted);font-size:14px}
+
+  section{padding:64px 0}
+  .sec-head{text-align:center;margin-bottom:44px}
+  .sec-head h2{font-size:30px;font-weight:800}
+  .sec-head p{color:var(--muted);margin-top:10px;max-width:620px;margin-left:auto;margin-right:auto}
+  .tag{display:inline-block;font-size:13px;color:var(--accent);font-weight:700;letter-spacing:1px;margin-bottom:10px;text-transform:uppercase}
+
+  /* tools tabs */
+  .tabs{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:30px}
+  .tab{
+    padding:10px 18px;border-radius:999px;border:1px solid var(--line);
+    background:var(--card);color:var(--muted);font-weight:600;font-size:14px;cursor:pointer;transition:.2s;
+  }
+  .tab:hover{color:var(--text)}
+  .tab.active{background:var(--accent);color:#04120b;border-color:var(--accent)}
+
+  .tool-card{
+    background:var(--card);border:1px solid var(--line);border-radius:18px;
+    padding:32px;max-width:680px;margin:0 auto;
+  }
+  .tool-card h3{font-size:22px;margin-bottom:6px}
+  .tool-card .desc{color:var(--muted);font-size:14px;margin-bottom:22px}
+  .field{margin-bottom:16px}
+  .field label{display:block;font-size:14px;color:var(--muted);margin-bottom:7px;font-weight:500}
+  .field input,.field select{
+    width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--line);
+    background:var(--bg2);color:var(--text);font-size:15px;outline:none;transition:.2s;
+  }
+  .field input:focus,.field select:focus{border-color:var(--accent)}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .seg{display:flex;gap:8px}
+  .seg button{
+    flex:1;padding:10px;border-radius:10px;border:1px solid var(--line);
+    background:var(--bg2);color:var(--muted);font-weight:600;cursor:pointer;transition:.2s;
+  }
+  .seg button.active{background:var(--accent);color:#04120b;border-color:var(--accent)}
+  .result{
+    margin-top:22px;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:20px;
+  }
+  .result .rline{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px dashed var(--line);font-size:15px}
+  .result .rline:last-child{border:none}
+  .result .rline b{color:var(--accent);font-size:16px}
+  .result .rline.hl b{color:var(--gold);font-size:22px}
+  .result .rline .k{color:var(--muted)}
+
+  /* about */
+  .about-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+  .feature{
+    background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px;
+  }
+  .feature .ico{font-size:28px;margin-bottom:14px}
+  .feature h4{font-size:17px;margin-bottom:8px}
+  .feature p{color:var(--muted);font-size:14px}
+
+  /* blog */
+  .blog-list{display:flex;flex-direction:column;gap:14px;max-width:820px;margin:0 auto}
+  .post{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 24px;
+    cursor:pointer;transition:.2s;
+  }
+  .post:hover{border-color:var(--accent)}
+  .post-head{display:flex;justify-content:space-between;align-items:center;gap:14px}
+  .post h4{font-size:17px}
+  .post .date{color:var(--muted);font-size:13px;white-space:nowrap}
+  .post .body{color:var(--muted);font-size:14px;margin-top:12px;display:none;border-top:1px dashed var(--line);padding-top:14px}
+  .post.open .body{display:block}
+  .post .arr{color:var(--accent);transition:.2s}
+  .post.open .arr{transform:rotate(180deg)}
+
+  footer{border-top:1px solid var(--line);padding:40px 0;text-align:center;color:var(--muted);font-size:14px}
+  .disclaimer{max-width:720px;margin:0 auto 16px;font-size:12px;color:#64748b}
+  @media(max-width:600px){
+    .nav-links{display:none}
+    .row2{grid-template-columns:1fr}
+    .stats{gap:24px}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-inner">
+    <div class="logo">财算坊<span>.</span></div>
+    <div class="nav-links">
+      <a href="#tools">工具箱</a>
+      <a href="#about">关于</a>
+      <a href="#blog">资讯</a>
+    </div>
+    <a href="#tools" class="btn btn-primary">开始计算</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="badge">🧮 <b>免费</b> 财务计算工具集 · 数据不上传</div>
+    <h1>算清每一笔钱，<br><span class="grad">做更聪明的财务决策</span></h1>
+    <p class="lead">复利、贷款、个税、存款、回报率、汇率换算…… 一站式财务工具箱，即开即用，本地计算，保护你的隐私。</p>
+    <div class="hero-actions">
+      <a href="#tools" class="btn btn-primary">立即使用工具箱</a>
+      <a href="#blog" class="btn btn-ghost">阅读财务知识</a>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="num">6+</div><div class="lbl">实用计算器</div></div>
+      <div class="stat"><div class="num">100%</div><div class="lbl">本地计算</div></div>
+      <div class="stat"><div class="num">0</div><div class="lbl">数据上传</div></div>
+    </div>
+  </div>
+</header>
+
+<section id="tools">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="tag">Tools</div>
+      <h2>财务工具箱</h2>
+      <p>选择下方工具，输入参数即可实时得到结果。所有计算均在你的浏览器本地完成。</p>
+    </div>
+
+    <div class="tabs" id="tabs"></div>
+    <div class="tool-card" id="tool-body"></div>
+  </div>
+</section>
+
+<section id="about" style="background:rgba(30,41,59,.35)">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="tag">About</div>
+      <h2>为什么选择财算坊</h2>
+      <p>我们专注把复杂的财务公式变得简单、透明、可信赖。</p>
+    </div>
+    <div class="about-grid">
+      <div class="feature"><div class="ico">🔒</div><h4>隐私优先</h4><p>全部计算在本地浏览器完成，不收集、不上传任何输入数据。</p></div>
+      <div class="feature"><div class="ico">⚡</div><h4>即开即用</h4><p>无需注册、无需登录，打开页面即可开始计算。</p></div>
+      <div class="feature"><div class="ico">📐</div><h4>算法透明</h4><p>采用标准财务公式，结果可复现、可验证。</p></div>
+      <div class="feature"><div class="ico">🆓</div><h4>完全免费</h4><p>所有工具永久免费，无隐藏收费项。</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="blog">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="tag">Blog</div>
+      <h2>财务知识资讯</h2>
+      <p>通俗易懂的理财入门知识，助你建立正确的金钱观。</p>
+    </div>
+    <div class="blog-list" id="blog-list"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p class="disclaimer">免责声明：本站所有计算工具及资讯仅供学习参考，不构成任何投资、税务或法律建议。实际结果请以银行、税务机关等官方口径为准。</p>
+    <p>© 2026 财算坊 · 财务工具箱 · <a href="/admin">后台管理</a></p>
+  </div>
+</footer>
+
+<script>
+// ============ 工具定义 ============
+const tools = [
+  {
+    id:'compound', name:'复利计算器', icon:'📈',
+    desc:'计算本金按复利增长，并支持每月定额追加投资后的未来价值。',
+    fields:[
+      {key:'p',label:'初始本金（元）',type:'num',val:10000,step:1000},
+      {key:'rate',label:'年化收益率（%）',type:'num',val:6,step:0.5},
+      {key:'years',label:'投资年限（年）',type:'num',val:10,step:1},
+      {key:'n',label:'每年复利次数',type:'select',val:'1',opts:{'1':'每年 1 次','12':'每月 1 次','4':'每季度 1 次'}},
+      {key:'pmt',label:'每月追加投资（元，可填 0）',type:'num',val:0,step:100},
+    ],
+    calc(v){
+      const r = v.rate/100, n = +v.n, t = v.years, P = v.p, pmt = v.pmt;
+      const periods = n*t;
+      const base = P * Math.pow(1 + r/n, periods);
+      let fv = base;
+      if(pmt>0 && r>0){
+        // 每月追加：按 n=12 处理每月投入的年金
+        const mr = r/12, mp = 12*t;
+        fv += pmt * ((Math.pow(1+mr,mp)-1)/mr);
+      }
+      const contributed = P + pmt*12*t;
+      const interest = fv - contributed;
+      return [
+        {k:'未来总价值', v:fmt(fv)},
+        {k:'累计投入本金', v:fmt(contributed)},
+        {k:'累计收益', v:fmt(interest), hl:true},
+        {k:'收益率', v:(fv/contributed*100-100).toFixed(1)+'%'},
+      ];
+    }
+  },
+  {
+    id:'loan', name:'贷款计算器', icon:'🏦',
+    desc:'按等额本息或等额本金方式，计算每月还款、总利息与还款总额。',
+    fields:[
+      {key:'p',label:'贷款金额（元）',type:'num',val:1000000,step:10000},
+      {key:'rate',label:'年利率（%）',type:'num',val:3.5,step:0.05},
+      {key:'years',label:'贷款期限（年）',type:'num',val:30,step:1},
+      {key:'mode',label:'还款方式',type:'seg',val:'eq',opts:{'eq':'等额本息','eqp':'等额本金'}},
+    ],
+    calc(v){
+      const P = v.p, r = v.rate/100/12, n = v.years*12;
+      if(v.mode==='eq'){
+        const m = P*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);
+        const total = m*n;
+        return [
+          {k:'每月还款', v:fmt(m), hl:true},
+          {k:'还款总额', v:fmt(total)},
+          {k:'总利息', v:fmt(total-P)},
+        ];
+      }else{
+        const mp = P/n;
+        const totalInterest = P*r*(n+1)/2;
+        return [
+          {k:'首月还款', v:fmt(mp + P*r), hl:true},
+          {k:'每月递减', v:fmt(mp*r)},
+          {k:'还款总额', v:fmt(P+totalInterest)},
+          {k:'总利息', v:fmt(totalInterest)},
+        ];
+      }
+    }
+  },
+  {
+    id:'tax', name:'个税计算器', icon:'🧾',
+    desc:'按中国居民综合所得（月薪）估算每月应缴个人所得税。',
+    fields:[
+      {key:'salary',label:'税前月收入（元）',type:'num',val:20000,step:1000},
+      {key:'social',label:'五险一金个人缴纳（元/月）',type:'num',val:2200,step:100},
+      {key:'deduct',label:'专项附加扣除（元/月）',type:'num',val:1000,step:100},
+    ],
+    calc(v){
+      const taxable = v.salary - 5000 - v.social - v.deduct;
+      const brackets = [
+        [3000,0.03,0],[12000,0.10,210],[25000,0.20,1410],
+        [35000,0.25,2660],[55000,0.30,4410],[80000,0.35,7160],[Infinity,0.45,15160]
+      ];
+      let tax = 0;
+      if(taxable<=0) tax = 0;
+      else{
+        for(const [limit,rate,qd] of brackets){
+          if(taxable<=limit){ tax = taxable*rate - qd; break; }
+        }
+      }
+      const after = v.salary - v.social - tax;
+      return [
+        {k:'应纳税所得额', v:fmt(Math.max(taxable,0))},
+        {k:'每月应缴个税', v:fmt(tax), hl:true},
+        {k:'税后到手', v:fmt(after)},
+        {k:'实际税率', v:(tax/v.salary*100).toFixed(2)+'%'},
+      ];
+    }
+  },
+  {
+    id:'deposit', name:'存款收益', icon:'💰',
+    desc:'计算定期存款到期后的利息与本息合计，支持单利与复利。',
+    fields:[
+      {key:'p',label:'存款本金（元）',type:'num',val:100000,step:10000},
+      {key:'rate',label:'年利率（%）',type:'num',val:2,step:0.05},
+      {key:'years',label:'存期（年）',type:'num',val:3,step:0.5},
+      {key:'mode',label:'计息方式',type:'seg',val:'simple',opts:{'simple':'单利','compound':'复利'}},
+    ],
+    calc(v){
+      const P=v.p, r=v.rate/100, t=v.years;
+      const interest = v.mode==='simple' ? P*r*t : P*(Math.pow(1+r,t)-1);
+      return [
+        {k:'到期利息', v:fmt(interest), hl:true},
+        {k:'本息合计', v:fmt(P+interest)},
+        {k:'年化收益', v:fmt(interest/t)},
+      ];
+    }
+  },
+  {
+    id:'roi', name:'投资回报率', icon:'📊',
+    desc:'计算一笔投资的总回报率与年化复合增长率（CAGR）。',
+    fields:[
+      {key:'init',label:'初始投入（元）',type:'num',val:100000,step:10000},
+      {key:'final',label:'最终价值（元）',type:'num',val:150000,step:10000},
+      {key:'years',label:'持有年限（年）',type:'num',val:3,step:0.5},
+    ],
+    calc(v){
+      const roi = (v.final - v.init)/v.init*100;
+      const cagr = v.init>0 ? (Math.pow(v.final/v.init, 1/v.years)-1)*100 : 0;
+      return [
+        {k:'总回报率', v:roi.toFixed(2)+'%', hl:true},
+        {k:'年化回报率 (CAGR)', v:cagr.toFixed(2)+'%'},
+        {k:'总收益', v:fmt(v.final - v.init)},
+      ];
+    }
+  },
+  {
+    id:'fx', name:'汇率换算', icon:'💱',
+    desc:'常用货币与人民币之间的快速换算（参考汇率，实际以银行牌价为准）。',
+    fields:[
+      {key:'amount',label:'金额',type:'num',val:100,step:1},
+      {key:'from',label:'从',type:'select',val:'CNY',opts:curOpts()},
+      {key:'to',label:'转换为',type:'select',val:'USD',opts:curOpts()},
+    ],
+    calc(v){
+      const rates = {CNY:1,USD:7.20,EUR:7.85,JPY:0.048,HKD:0.92,GBP:9.10,KRW:0.0054};
+      const cny = v.amount * rates[v.from];
+      const out = cny / rates[v.to];
+      return [
+        {k:'换算结果', v:fmt(out), hl:true},
+        {k:'汇率（以人民币为基准）', v:'1 '+v.from+' ≈ '+rates[v.from]+' 元'},
+      ];
+    }
+  }
+];
+
+function curOpts(){
+  return {CNY:'人民币 CNY',USD:'美元 USD',EUR:'欧元 EUR',JPY:'日元 JPY',HKD:'港币 HKD',GBP:'英镑 GBP',KRW:'韩元 KRW'};
+}
+function fmt(n){
+  return '¥ ' + (Math.round(n*100)/100).toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+
+// ============ 渲染 ============
+const tabsEl = document.getElementById('tabs');
+const bodyEl = document.getElementById('tool-body');
+let current = tools[0];
+
+tools.forEach(t=>{
+  const b = document.createElement('button');
+  b.className='tab'+(t===current?' active':'');
+  b.textContent = t.icon+' '+t.name;
+  b.onclick = ()=>select(t);
+  tabsEl.appendChild(b);
+});
+
+function select(t){
+  current = t;
+  document.querySelectorAll('.tab').forEach((x,i)=>x.classList.toggle('active', tools[i]===t));
+  render(t);
+}
+
+function render(t){
+  let html = '<h3>'+t.icon+' '+t.name+'</h3><p class="desc">'+t.desc+'</p>';
+  const state = {};
+  t.fields.forEach(f=>{
+    state[f.key]=f.val;
+    html += '<div class="field"><label>'+f.label+'</label>';
+    if(f.type==='select'){
+      html += '<select id="f_'+f.key+'">';
+      for(const [k,lbl] of Object.entries(f.opts)) html += '<option value="'+k+'"'+(k===f.val?' selected':'')+'>'+lbl+'</option>';
+      html += '</select>';
+    }else if(f.type==='seg'){
+      html += '<div class="seg" id="f_'+f.key+'">';
+      for(const [k,lbl] of Object.entries(f.opts)) html += '<button data-v="'+k+'" class="'+(k===f.val?'active':'')+'">'+lbl+'</button>';
+      html += '</div>';
+    }else{
+      html += '<input type="number" id="f_'+f.key+'" value="'+f.val+'" step="'+(f.step||1)+'">';
+    }
+    html += '</div>';
+  });
+  html += '<div class="result" id="result"></div>';
+  bodyEl.innerHTML = html;
+
+  function gather(){
+    t.fields.forEach(f=>{
+      const el = document.getElementById('f_'+f.key);
+      if(f.type==='seg'){
+        state[f.key] = el.querySelector('.active').dataset.v;
+      }else{
+        state[f.key] = parseFloat(el.value)||0;
+      }
+    });
+  }
+  function update(){
+    gather();
+    const rows = t.calc(state);
+    document.getElementById('result').innerHTML = rows.map(r=>
+      '<div class="rline'+(r.hl?' hl':'')+'"><span class="k">'+r.k+'</span><b>'+r.v+'</b></div>'
+    ).join('');
+  }
+  bodyEl.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',update));
+  bodyEl.querySelectorAll('.seg').forEach(seg=>{
+    seg.addEventListener('click',e=>{
+      const btn = e.target.closest('button'); if(!btn) return;
+      seg.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active'); update();
+    });
+  });
+  update();
+}
+render(current);
+
+// ============ 博客 ============
+const posts = [
+  {t:'复利：世界第八大奇迹',d:'2026-11-18',body:'复利的本质是"利滚利"。假设年化 8%，10 万本金 30 年后约为 100 万。关键在于时间与持续投入，越早开始，复利威力越大。建议尽早建立长期投资计划，并保持纪律性。'},
+  {t:'等额本息 vs 等额本金怎么选',d:'2026-11-10',body:'等额本息每月还款固定，前期还息多、压力小；等额本金逐月递减、总利息更少。收入稳定可选本息，现金流充裕且想省利息可选本金。'},
+  {t:'个税专项附加扣除有哪些',d:'2026-11-02',body:'主要包括子女教育、继续教育、大病医疗、住房贷款利息、住房租金、赡养老人、3 岁以下婴幼儿照护等。合理申报可有效降低应纳税所得额。'},
+  {t:'稳健理财入门指南',d:'2026-10-25',body:'先建立应急备用金（3-6 个月支出），再按风险承受能力配置：货币基金、债券、指数基金等。切勿盲目追高，坚持长期、分散、低成本。'},
+];
+const blogEl = document.getElementById('blog-list');
+posts.forEach(p=>{
+  const div = document.createElement('div');
+  div.className='post';
+  div.innerHTML = '<div class="post-head"><h4>'+p.t+'</h4><span class="date">'+p.d+' <span class="arr">▾</span></span></div><div class="body">'+p.body+'</div>';
+  div.onclick = ()=>div.classList.toggle('open');
+  blogEl.appendChild(div);
+});
+</script>
+</body>
+</html>
