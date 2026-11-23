@@ -27,6 +27,12 @@ desktop.ini
 **/*.sqlite3-wal
 **/*.sqlite3-shm
 
+# 安装包与压缩包（非源码）
+*.exe
+*.msi
+*.7z
+*.zip
+
 # 构建产物
 **/dist/
 **/build/
